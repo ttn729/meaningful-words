@@ -5,19 +5,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { supabase, user } from "../utils/supabaseClient";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext, supabase } from "../utils/supabaseClient";
 
 export default function ManageWordPack() {
   const MIN_ROWS = 25;
   const MAX_ROWS = 25;
-
 
   const [wordPacks, setWordPacks] = useState<any>([]);
   const [selectedWordPack, setSelectedWordPack] = useState<any>(null);
   const [title, setTitle] = useState("");
   const [words, setWords] = useState("");
   const [meanings, setMeanings] = useState("");
+
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     getWordPacks();
@@ -30,7 +31,10 @@ export default function ManageWordPack() {
   }, [selectedWordPack]);
 
   async function getWordPacks() {
-    const { data } = await supabase.from("WordPack").select().eq('created_by', user?.id ?? '');
+    const { data } = await supabase
+      .from("WordPack")
+      .select()
+      .eq("created_by", user?.id ?? "");
     setWordPacks(data);
   }
 

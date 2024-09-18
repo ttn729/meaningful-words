@@ -1,9 +1,13 @@
 import { Button } from "@mui/material";
-import { session, supabase, user } from "./utils/supabaseClient";
-import { useEffect, useState } from "react";
+import { AuthContext, supabase} from "./utils/supabaseClient";
+import { useContext, useEffect, useState } from "react";
 import { Session } from "@supabase/auth-js/dist/module/lib/types";
 
 export default function App() {
+
+  const { user, session } = useContext(AuthContext);
+
+  
   async function login() {
     await supabase.auth.signInWithOAuth({
       provider: "google",

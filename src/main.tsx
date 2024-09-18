@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
@@ -12,7 +12,7 @@ import ManageWordPack from "./components/ManageWordPack";
 import Root from "./components/Root";
 import ErrorPage from "./components/ErrorPage";
 import App from "./App";
-import { session } from "./utils/supabaseClient";
+import { AuthContext, AuthProvider } from "./utils/supabaseClient";
 
 interface RequireAuthProps {
   children: React.ReactNode;
@@ -46,12 +46,14 @@ const router = createBrowserRouter([
 ]);
 
 function RequireAuth({ children, redirectTo }: RequireAuthProps) {
-  let isAuthenticated = session;
-  return isAuthenticated ? children : <Navigate to={redirectTo} />;
+  const { session } = useContext(AuthContext);
+  return session ? children : <Navigate to={redirectTo} />;
 }
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );
